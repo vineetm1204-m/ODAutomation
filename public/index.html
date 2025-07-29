@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OD Mail Generator for ACC</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-envelope-open-text"></i> OD Mail Generator</h1>
+            <p>Generate professional On-Duty request emails for ACC</p>
+        </div>
+        
+        <div class="content">
+            <!-- Basic Information -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-user"></i> Basic Information
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="coordinator">
+                            <i class="fas fa-user-tie"></i> Event Coordinator
+                        </label>
+                        <div class="input-wrapper">
+                            <input
+                                type="text"
+                                id="coordinator"
+                                placeholder="Coordinator Name"
+                            />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">
+                            <i class="fas fa-calendar-alt"></i> Event Date
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="date" id="date" />
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="classSection">
+                            <i class="fas fa-graduation-cap"></i> Class & Section
+                        </label>
+                        <div class="input-wrapper">
+                            <input
+                                type="text"
+                                id="classSection"
+                                placeholder="B.Tech CSE - [] Sem Section []"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timetable Upload -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-upload"></i> Timetable Auto-Fill
+                    </div>
+                </div>
+                <div
+                    class="timetable-upload"
+                    onclick="document.getElementById('timetableFile').click()"
+                >
+                    <i
+                        class="fas fa-cloud-upload-alt"
+                        style="
+                            font-size: 2rem;
+                            color: var(--primary);
+                            margin-bottom: 1rem;
+                        "
+                    ></i>
+                    <p><strong>Click to upload timetable</strong> or drag and drop</p>
+                    <p
+                        style="
+                            font-size: 0.875rem;
+                            color: var(--text-muted);
+                            margin-top: 0.5rem;
+                        "
+                    >
+                        CSV format: Day,Time,Subject,Faculty
+                    </p>
+                    <input
+                        type="file"
+                        id="timetableFile"
+                        class="file-input"
+                        accept=".csv,.txt"
+                    />
+                </div>
+                <div id="timetableControls" style="display: none">
+                    <div class="timetable-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span id="timetableStatus">Timetable loaded successfully!</span>
+                    </div>
+                    <div class="form-grid three-cols" style="margin-top: 1.5rem">
+                        <div class="form-group">
+                            <label for="daySelect">
+                                <i class="fas fa-calendar"></i> Select Day
+                            </label>
+                            <select id="daySelect">
+                                <option value="">Choose day</option>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeSelect">
+                                <i class="fas fa-clock"></i> Select Time
+                            </label>
+                            <select id="timeSelect">
+                                <option value="">Choose time</option>
+                                <option value="09:15 AM - 10:10 AM">09:15 AM - 10:10 AM</option>
+                                <option value="10:15 AM - 11:10 AM">10:15 AM - 11:10 AM</option>
+                                <option value="11:15 AM - 12:10 PM">11:15 AM - 12:10 PM</option>
+                                <option value="12:15 AM - 01:10 PM">12:15 AM - 01:10 PM</option>
+                                <option value="01:15 AM - 02:10 PM">01:15 AM - 02:10 PM</option>
+                                <option value="02:15 PM - 03:10 PM">02:15 PM - 03:10 PM</option>
+                                <option value="03:15 PM - 04:10 PM">03:15 PM - 04:10 PM</option>
+                                <option value="04:15 PM - 05:10 PM">04:15 PM - 05:10 PM</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: end">
+                            <button
+                                class="btn btn-primary"
+                                onclick="autoFillFromTimetable()"
+                                style="width: 100%"
+                            >
+                                <i class="fas fa-magic"></i> Auto Fill
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subjects -->
+            <div class="form-section">
+                <div id="subjectsContainer"></div>
+                <div class="action-bar">
+                    <button class="btn btn-secondary" onclick="addSubject()">
+                        <i class="fas fa-plus"></i> Add Subject
+                    </button>
+                    <button class="btn btn-primary" onclick="generateMail()">
+                        <i class="fas fa-magic"></i> Generate Email
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-file-alt"></i> Generated Email
+                    </div>
+                </div>
+                <textarea
+                    id="output"
+                    readonly
+                    placeholder="Your OD request email will appear here..."
+                ></textarea>
+                <div class="action-bar">
+                    <button class="btn btn-primary" onclick="copyText()">
+                        <i class="fas fa-copy"></i> Copy to Clipboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
