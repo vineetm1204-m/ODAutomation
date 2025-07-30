@@ -352,7 +352,7 @@ function generateMail() {
 
   const email = `Subject: Request for OD Approval – ${formattedDate}
 
-Respected ${coordinator},
+Respected ${coordinator} ,
 
 I hope this email finds you in good health and spirits.
 
@@ -397,6 +397,22 @@ window.addEventListener("load", () => {
   fetchSubjectData(); // Fetch subject data on load
   addSubject();
 });
+function sendEmail() {
+  const coordinator = document.getElementById('coordinator').value.trim();
+  const subject = "On-Duty Request";
+  const body = document.getElementById('output').value;
+
+  if (!coordinator || !body) {
+    alert("Please enter coordinator name and generate the email.");
+    return;
+  }
+
+  const email = prompt("Enter coordinator's email address:");
+  if (!email) return;
+
+  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailtoLink;
+}
 
 // Add keyboard shortcuts
 document.addEventListener("keydown", (e) => {
